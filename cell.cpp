@@ -1,6 +1,11 @@
 #include "cell.h"
 
-void Cell::setState(bool newState){
-  state = newState; 
-  std::cout << "New state: " << state << std::endl;
+Cell::Cell(void){}
+
+void Cell::setState(bool isAlive){
+  this->state = isAlive; 
+}
+
+bool Cell::getState(void){
+  return this->state;
 }

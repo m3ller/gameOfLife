@@ -1,9 +1,11 @@
 #include <iostream>
 class Cell{
   private:
-    bool state = 0;  // alive=1, dead=0
+    bool state = false;  // Alive = 1; Dead = 0
 
   public:
+    Cell();
     void setState(bool);
+    bool getState(void);
 };
 
