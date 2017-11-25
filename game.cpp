@@ -1,5 +1,5 @@
 #include <iostream>
-#include <ncurses.h>
+#include <curses.h>
 #include <queue>
 #include <unistd.h>  // for sleep()
 
@@ -7,20 +7,49 @@
 //TODO: Make cmake file
 
 class Game{
-  std::queue<Cell> liveCells;
-  std::queue<Cell> newLiveCells;
+  private:
+    std::vector< std::vector<unsigned char> > board;
+    std::queue<Cell> liveCells;
+    std::queue<Cell> newLiveCells;
   public:
-    int test();
+    void setBoard(int, int);
+    void printBoard(void);
 };
 
-int Game::test(){
-  Cell c1;
-  c1.setState(true);
-  //liveCells.push(c1);
-  return 0;
+void Game::setBoard(int rows, int cols){
+  board.assign(rows, std::vector<unsigned char>(cols, 0));
+}
+
+void Game::printBoard(void){
+  // TODO: check existence of board
+  
+  // Make window
+  WINDOW * mainwin = initscr();
+  if ( mainwin == NULL ) {
+    fprintf(stderr, "Error initialising ncurses.\n");
+    exit(EXIT_FAILURE);
+  }
+
+  // Display board
+  addstr("Hello World");
+  refresh();
+  sleep(3);
+  
+  // Clean up window  
+  delwin(mainwin);
+  endwin();
+  refresh();
 }
 
 int main(){
   Game myGame;
-  myGame.test();
+  int rows, cols;
+
+  // Need to check validity of user input
+  std::cout << "Enter number of rows: ";
+  std::cin >> rows;
+  std::cout << "Enter number of cols: ";
+  std::cin >> cols;
+  myGame.setBoard(rows, cols);
+  myGame.printBoard();
 }
