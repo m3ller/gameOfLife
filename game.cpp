@@ -8,23 +8,38 @@
 
 class Game{
   private:
+    WINDOW * mainwin;
     std::vector< std::vector<unsigned char> > board;
     std::queue<Cell> liveCells;
     std::queue<Cell> newLiveCells;
   public:
+    Game(void);
+    ~Game(void);
     void setBoard(int, int);
     void printBoard(void);
 };
 
+Game::Game(void){
+  // Construct window to display game board
+  this->mainwin = initscr(); 
+}
+
+Game::~Game(void){
+  // Destroy window displaying game board
+  delwin(this->mainwin);
+  endwin();
+  refresh();
+}
+
+
 void Game::setBoard(int rows, int cols){
-  board.assign(rows, std::vector<unsigned char>(cols, 0));
+  this->board.assign(rows, std::vector<unsigned char>(cols, 0));
 }
 
 void Game::printBoard(void){
   // TODO: check existence of board
   
-  // Make window
-  WINDOW * mainwin = initscr();
+  // Check window
   if ( mainwin == NULL ) {
     fprintf(stderr, "Error initialising ncurses.\n");
     exit(EXIT_FAILURE);
@@ -35,17 +50,13 @@ void Game::printBoard(void){
   refresh();
   sleep(3);
   
-  // Clean up window  
-  delwin(mainwin);
-  endwin();
-  refresh();
 }
 
 int main(){
   Game myGame;
   int rows, cols;
 
-  // Need to check validity of user input
+  //TODO: Need to check validity of user input
   std::cout << "Enter number of rows: ";
   std::cin >> rows;
   std::cout << "Enter number of cols: ";
