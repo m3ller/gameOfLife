@@ -10,21 +10,26 @@
 class Game{
   private:
     WINDOW * mainwin;
+    int n_rows;
+    int n_cols;
     std::vector< std::vector<unsigned char> > board;
     std::forward_list<Cell> liveCells;  // Change to a list.  Don't need queue
     //std::forward_list<Cell> newLiveCells;
   public:
-    Game(void);
+    Game(int, int);
     ~Game(void);
-    void initializeBoard(int, int);
+    void initializeBoard(void);
     void updateBoard(void);
     void displayBoard(void);
     void addCell(int, int);
 };
 
-Game::Game(void){
+Game::Game(int n_rows, int n_cols){
   // Construct window to display game board
   this->mainwin = initscr(); 
+  this->board.assign(n_rows, std::vector<unsigned char>(n_cols, 0));
+  this->n_rows = n_rows;
+  this->n_cols = n_cols;
 }
 
 Game::~Game(void){
@@ -41,9 +46,7 @@ void Game::addCell(int row, int col){
   this->board[row][col] = 1;
 }
 
-void Game::initializeBoard(int rows, int cols){
-  this->board.assign(rows, std::vector<unsigned char>(cols, 0));
-
+void Game::initializeBoard(void){
   // Set up a default start board
   this->addCell(0, 0);
   this->addCell(2, 0);
@@ -53,10 +56,10 @@ void Game::initializeBoard(int rows, int cols){
 
 void Game::updateBoard(void){
   // Update board with values
-  int n = 5;
-  auto it = this->liveCells.cbegin();
+  auto it = this->liveCells.begin();
+
   std::forward_list<Cell> neighbours;  // Change to a list.  Don't need queue
-  auto it_neigh = neighbours.cbegin();
+  auto it_neigh = neighbours.before_begin();
 
   while(it != this->liveCells.cend()){
     Cell cell = *it;
@@ -64,31 +67,32 @@ void Game::updateBoard(void){
     int col = cell.getCol();
 
     int minrow = std::max(0, row-1);
-    int maxrow = std::min(n-1, row+1);
+    int maxrow = std::min(this->n_rows-1, row+1);
     int mincol = std::max(0, col-1);
-    int maxcol = std::min(n-1, col+1);
+    int maxcol = std::min(this->n_cols-1, col+1);
   
     for(int i = minrow; i <= maxrow; i++){
       for(int j = mincol; j<= maxcol; j++){
         if(i==row and j==col){
           continue;
         }
-        it_neigh = neighbours.emplace_after(it_neigh, Cell(i, j));
+        neighbours.emplace_after(it_neigh, Cell(i, j));
         this->board[i][j] += 1;
       }
     }
     it++;
+    it_neigh++;
   }
 
   // Find cells
-  auto it_neigh2 = neighbours.cbegin();
-  while(it_neigh2 != neighbours.cend()){
-    it_neigh2++;
-    int row = (*it_neigh2).getRow();
-    int col = (*it_neigh2).getCol();
+  it_neigh = neighbours.begin();
+  while(it_neigh != neighbours.cend()){
+    int row = (*it_neigh).getRow();
+    int col = (*it_neigh).getCol();
     if(this->board[row][col] >= 3 and this->board[row][col] < 5){
       this->liveCells.emplace_after(this->liveCells.cbegin(), Cell(row,col));
     }
+    it_neigh++;
   }
   
   // Update new live cells
@@ -120,16 +124,15 @@ void Game::displayBoard(void){
 }
 
 int main(){
-  int rows, cols;
-
   //TODO: Need to check validity of user input
+  int n_rows, n_cols;
   std::cout << "Enter number of rows: ";
-  std::cin >> rows;
+  std::cin >> n_rows;
   std::cout << "Enter number of cols: ";
-  std::cin >> cols;
+  std::cin >> n_cols;
 
-  Game myGame;
-  myGame.initializeBoard(rows, cols);
+  Game myGame(n_rows, n_cols);
+  myGame.initializeBoard();
   myGame.displayBoard();
   myGame.updateBoard();
   myGame.displayBoard();
