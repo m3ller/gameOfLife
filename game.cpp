@@ -49,9 +49,9 @@ void Game::addCell(int row, int col){
 void Game::initializeBoard(void){
   // Set up a default start board
   this->addCell(0, 0);
-  this->addCell(2, 0);
-  this->addCell(1, 2);
-  this->addCell(0, 2);
+  this->addCell(1, 0);
+  this->addCell(1, 1);
+  this->addCell(0, 1);
 }
 
 void Game::updateBoard(void){
@@ -74,6 +74,7 @@ void Game::updateBoard(void){
     for(int i = minrow; i <= maxrow; i++){
       for(int j = mincol; j<= maxcol; j++){
         if(i==row and j==col){
+          neighbours.emplace_after(it_neigh, Cell(i, j));
           continue;
         }
         neighbours.emplace_after(it_neigh, Cell(i, j));
@@ -85,13 +86,17 @@ void Game::updateBoard(void){
   }
 
   // Find cells
+  this->liveCells.erase_after(this->liveCells.before_begin());
+  it = this->liveCells.begin();
   it_neigh = neighbours.begin();
   while(it_neigh != neighbours.cend()){
     int row = (*it_neigh).getRow();
     int col = (*it_neigh).getCol();
     if(this->board[row][col] >= 3 and this->board[row][col] < 5){
-      this->liveCells.emplace_after(this->liveCells.cbegin(), Cell(row,col));
+      this->liveCells.emplace_after(it, Cell(row,col));
+      it++;
     }
+    this->board[row][col] = 0;
     it_neigh++;
   }
   
@@ -112,15 +117,15 @@ void Game::displayBoard(void){
 
   // Display board
   // TODO: check that liveCells isn't empty
+  clear();
   auto it = liveCells.cbegin();
   do{
     Cell cell = *it;
     mvaddstr(cell.getRow(), cell.getCol(), "o");
     it++;
   }while(it != liveCells.cend());
-
   refresh();
-  sleep(3);
+  sleep(1);
 }
 
 int main(){
@@ -133,6 +138,18 @@ int main(){
 
   Game myGame(n_rows, n_cols);
   myGame.initializeBoard();
+  myGame.displayBoard();
+  myGame.updateBoard();
+  myGame.displayBoard();
+  myGame.updateBoard();
+  myGame.displayBoard();
+  myGame.updateBoard();
+  myGame.displayBoard();
+  myGame.updateBoard();
+  myGame.displayBoard();
+  myGame.updateBoard();
+  myGame.displayBoard();
+  myGame.updateBoard();
   myGame.displayBoard();
   myGame.updateBoard();
   myGame.displayBoard();
