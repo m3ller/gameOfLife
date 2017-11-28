@@ -73,16 +73,15 @@ void Game::updateBoard(void){
   
     for(int i = minrow; i <= maxrow; i++){
       for(int j = mincol; j<= maxcol; j++){
-        if(i==row and j==col){
-          neighbours.emplace_after(it_neigh, Cell(i, j));
-          continue;
+        if(i!=row and j!=col){
+          this->board[i][j]++;
         }
+
         neighbours.emplace_after(it_neigh, Cell(i, j));
-        this->board[i][j] += 1;
+        it_neigh++;
       }
     }
     it++;
-    it_neigh++;
   }
 
   // Find cells
@@ -99,10 +98,6 @@ void Game::updateBoard(void){
     this->board[row][col] = 0;
     it_neigh++;
   }
-  
-  // Update new live cells
-  //this->liveCells.swap(this->newLiveCells);
-  //TODO: clear up newLiveCells
    
 }
 
