@@ -58,7 +58,7 @@ void Game::updateBoard(void){
   // Update board with values
   auto it = this->liveCells.begin();
 
-  std::forward_list<Cell> neighbours;  // Change to a list.  Don't need queue
+  std::forward_list<Cell> neighbours;
   auto it_neigh = neighbours.before_begin();
 
   while(it != this->liveCells.cend()){
@@ -86,7 +86,7 @@ void Game::updateBoard(void){
   }
 
   // Find cells
-  this->liveCells.erase_after(this->liveCells.before_begin());
+  this->liveCells.erase_after(this->liveCells.cbegin(), this->liveCells.cend());
   it = this->liveCells.begin();
   it_neigh = neighbours.begin();
   while(it_neigh != neighbours.cend()){
@@ -139,18 +139,8 @@ int main(){
   Game myGame(n_rows, n_cols);
   myGame.initializeBoard();
   myGame.displayBoard();
-  myGame.updateBoard();
-  myGame.displayBoard();
-  myGame.updateBoard();
-  myGame.displayBoard();
-  myGame.updateBoard();
-  myGame.displayBoard();
-  myGame.updateBoard();
-  myGame.displayBoard();
-  myGame.updateBoard();
-  myGame.displayBoard();
-  myGame.updateBoard();
-  myGame.displayBoard();
-  myGame.updateBoard();
-  myGame.displayBoard();
+  while(true){
+    myGame.updateBoard();
+    myGame.displayBoard();
+  }
 }
