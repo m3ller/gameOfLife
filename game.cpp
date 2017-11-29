@@ -12,7 +12,8 @@ class Game{
     WINDOW * mainwin;
     int n_rows;
     int n_cols;
-    std::vector< std::vector<unsigned char> > board;
+    //std::vector< std::vector<unsigned char> > board;
+    std::vector< std::vector<int> > board;
     std::forward_list<Cell> liveCells;  // Change to a list.  Don't need queue
     //std::forward_list<Cell> newLiveCells;
   public:
@@ -27,7 +28,8 @@ class Game{
 Game::Game(int n_rows, int n_cols){
   // Construct window to display game board
   this->mainwin = initscr(); 
-  this->board.assign(n_rows, std::vector<unsigned char>(n_cols, 0));
+  //this->board.assign(n_rows, std::vector<unsigned char>(n_cols, 0));
+  this->board.assign(n_rows, std::vector<int>(n_cols, 0));
   this->n_rows = n_rows;
   this->n_cols = n_cols;
 }
@@ -48,10 +50,9 @@ void Game::addCell(int row, int col){
 
 void Game::initializeBoard(void){
   // Set up a default start board
-  this->addCell(0, 0);
-  this->addCell(1, 0);
-  this->addCell(1, 1);
-  this->addCell(0, 1);
+  this->addCell(2, 0);
+  this->addCell(2, 1);
+  this->addCell(2, 2);
 }
 
 void Game::updateBoard(void){
@@ -73,19 +74,19 @@ void Game::updateBoard(void){
   
     for(int i = minrow; i <= maxrow; i++){
       for(int j = mincol; j<= maxcol; j++){
-        if(i!=row and j!=col){
+        if (i!=row or j!=col){
           this->board[i][j]++;
         }
 
         neighbours.emplace_after(it_neigh, Cell(i, j));
-        it_neigh++;
+        //++it_neigh;
       }
     }
-    it++;
+    ++it;
   }
 
   // Find cells
-  this->liveCells.erase_after(this->liveCells.cbegin(), this->liveCells.cend());
+  this->liveCells.erase_after(this->liveCells.begin(), this->liveCells.end());
   it = this->liveCells.begin();
   it_neigh = neighbours.begin();
   while(it_neigh != neighbours.cend()){
