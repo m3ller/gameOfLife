@@ -3,10 +3,10 @@ class Cell{
   private:
     int row;
     int col;
-    bool state = false;  // Alive = 1; Dead = 0
+    bool state;  // Alive = 1; Dead = 0
 
   public:
-    Cell(int, int);
+    Cell(int row, int col, bool isAlive = false);
     void setState(bool);
     bool getState(void);
     int getRow(void) const;
