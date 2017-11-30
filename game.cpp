@@ -45,7 +45,7 @@ void Game::addCell(int row, int col){
   //TODO: This looks like an odd way to add cells
   auto it = this->liveCells.before_begin();
   this->liveCells.emplace_after(it, Cell(row, col));      
-  this->board[row][col] = 1;
+  //this->board[row][col] = 1;
 }
 
 void Game::initializeBoard(void){
@@ -74,10 +74,11 @@ void Game::updateBoard(void){
   
     for(int i = minrow; i <= maxrow; i++){
       for(int j = mincol; j<= maxcol; j++){
-        if (i!=row or j!=col){
+        /*if (i!=row or j!=col){
           this->board[i][j]++;
-        }
+        }*/
 
+        this->board[i][j]++;
         neighbours.emplace_after(it_neigh, Cell(i, j));
         //++it_neigh;
       }
