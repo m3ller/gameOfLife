@@ -86,19 +86,22 @@ void Game::updateBoard(void){
   }
 
   // Find cells
-  this->liveCells.erase_after(this->liveCells.begin(), this->liveCells.end());
-  it = this->liveCells.begin();
+  std::forward_list<Cell> tempLiveCells;
+  //this->liveCells.erase_after(this->liveCells.begin(), this->liveCells.end());
+  //it = this->liveCells.begin();
+  it = tempLiveCells.before_begin();
   it_neigh = neighbours.begin();
   while(it_neigh != neighbours.cend()){
     int row = (*it_neigh).getRow();
     int col = (*it_neigh).getCol();
     if(this->board[row][col] >= 3 and this->board[row][col] < 5){
-      this->liveCells.emplace_after(it, Cell(row,col));
+      tempLiveCells.emplace_after(it, Cell(row,col));
       it++;
     }
     this->board[row][col] = 0;
     it_neigh++;
   }
+  this->liveCells.swap(tempLiveCells);
    
 }
 
@@ -114,12 +117,15 @@ void Game::displayBoard(void){
   // Display board
   // TODO: check that liveCells isn't empty
   clear();
-  auto it = liveCells.cbegin();
+  /*auto it = this->liveCells.begin();
   do{
     Cell cell = *it;
     mvaddstr(cell.getRow(), cell.getCol(), "o");
     it++;
-  }while(it != liveCells.cend());
+  }while(it != this->liveCells.end());*/
+  for(Cell& cell: this->liveCells){
+    mvaddstr(cell.getRow(), cell.getCol(), "o");
+  }
   refresh();
   sleep(1);
 }
