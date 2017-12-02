@@ -2,6 +2,7 @@
 #include <curses.h>
 #include <iostream>
 #include <forward_list>
+#include <list>
 #include <unistd.h>  // for sleep()
 
 #include "cell.h"
@@ -44,23 +45,34 @@ Game::~Game(void){
 void Game::addCell(int row, int col){
   //TODO: This looks like an odd way to add cells
   auto it = this->liveCells.before_begin();
-  this->liveCells.emplace_after(it, Cell(row, col));      
+  this->liveCells.emplace_after(it, Cell(row, col, true));      
   //this->board[row][col] = 1;
 }
 
 void Game::initializeBoard(void){
   // Set up a default start board
+  this->addCell(1, 0);
+  this->addCell(1, 1);
   this->addCell(2, 0);
   this->addCell(2, 1);
-  this->addCell(2, 2);
+  this->addCell(3, 2);
+  this->addCell(3, 3);
+  this->addCell(4, 2);
+  this->addCell(4, 3);
+
+  /*this->addCell(5, 0);
+  this->addCell(6, 1);
+  this->addCell(6, 2);
+  this->addCell(5, 2);
+  this->addCell(4, 2);*/
 }
 
 void Game::updateBoard(void){
   // Update board with values
-  auto it = this->liveCells.begin();
+  auto it = this->liveCells.before_begin();
 
-  std::forward_list<Cell> neighbours;
-  auto it_neigh = neighbours.before_begin();
+  std::list<Cell> neighbours;
+  auto it_neigh = neighbours.begin();
 
   while(it != this->liveCells.cend()){
     Cell cell = *it;
@@ -74,12 +86,13 @@ void Game::updateBoard(void){
   
     for(int i = minrow; i <= maxrow; i++){
       for(int j = mincol; j<= maxcol; j++){
-        /*if (i!=row or j!=col){
-          this->board[i][j]++;
-        }*/
-
         this->board[i][j]++;
-        neighbours.emplace_after(it_neigh, Cell(i, j));
+        //bool state = false;
+        if (i==row and j==col){
+          neighbours.emplace_front(Cell(i, j, true));
+        }else{
+          neighbours.emplace_back(Cell(i, j, false));
+        }
         //++it_neigh;
       }
     }
@@ -88,16 +101,25 @@ void Game::updateBoard(void){
 
   // Find cells
   std::forward_list<Cell> tempLiveCells;
-  //this->liveCells.erase_after(this->liveCells.begin(), this->liveCells.end());
-  //it = this->liveCells.begin();
   it = tempLiveCells.before_begin();
   it_neigh = neighbours.begin();
   while(it_neigh != neighbours.cend()){
     int row = (*it_neigh).getRow();
     int col = (*it_neigh).getCol();
-    if(this->board[row][col] >= 3 and this->board[row][col] < 5){
+    /*if(this->board[row][col] >= 3 and this->board[row][col] < 5){
       tempLiveCells.emplace_after(it, Cell(row,col));
       it++;
+    }*/
+    if ((*it_neigh).getState() == true){
+      if(this->board[row][col] == 3 or this->board[row][col] == 4){ 
+        //it = tempLiveCells.insert_after(it, Cell(row,col,true));
+        it = tempLiveCells.insert_after(it, Cell(row,col,true));
+      }
+    }else{
+      if(this->board[row][col] ==3){ 
+        //it = tempLiveCells.insert_after(it, Cell(row,col,true));
+        it = tempLiveCells.insert_after(it, Cell(row,col,true));
+      }
     }
     this->board[row][col] = 0;
     it_neigh++;
@@ -116,14 +138,7 @@ void Game::displayBoard(void){
   }
 
   // Display board
-  // TODO: check that liveCells isn't empty
   clear();
-  /*auto it = this->liveCells.begin();
-  do{
-    Cell cell = *it;
-    mvaddstr(cell.getRow(), cell.getCol(), "o");
-    it++;
-  }while(it != this->liveCells.end());*/
   for(Cell& cell: this->liveCells){
     mvaddstr(cell.getRow(), cell.getCol(), "o");
   }
