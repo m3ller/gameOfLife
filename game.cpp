@@ -7,6 +7,7 @@
 
 #include "cell.h"
 //TODO: Make cmake file
+//TODO: outline game board.  so user knows when cells are at the edge
 
 class Game{
   private:
@@ -49,22 +50,23 @@ void Game::addCell(int row, int col){
   //this->board[row][col] = 1;
 }
 
+//TODO: way for user to dynamically input cells.
 void Game::initializeBoard(void){
   // Set up a default start board
-  this->addCell(1, 0);
+  /*this->addCell(1, 0);
   this->addCell(1, 1);
   this->addCell(2, 0);
   this->addCell(2, 1);
   this->addCell(3, 2);
   this->addCell(3, 3);
   this->addCell(4, 2);
-  this->addCell(4, 3);
+  this->addCell(4, 3);*/
 
-  /*this->addCell(5, 0);
+  this->addCell(5, 0);
   this->addCell(6, 1);
   this->addCell(6, 2);
   this->addCell(5, 2);
-  this->addCell(4, 2);*/
+  this->addCell(4, 2);
 }
 
 void Game::updateBoard(void){
