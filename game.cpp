@@ -53,6 +53,7 @@ void Game::addCell(int row, int col){
 //TODO: way for user to dynamically input cells.
 void Game::initializeBoard(void){
   // Set up a default start board
+  // Blinker
   /*this->addCell(1, 0);
   this->addCell(1, 1);
   this->addCell(2, 0);
@@ -62,6 +63,7 @@ void Game::initializeBoard(void){
   this->addCell(4, 2);
   this->addCell(4, 3);*/
 
+  // Glider
   this->addCell(5, 0);
   this->addCell(6, 1);
   this->addCell(6, 2);
